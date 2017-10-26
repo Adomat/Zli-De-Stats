@@ -10,10 +10,28 @@ public class SqlManager {
 			Class.forName("org.sqlite.JDBC");
 			SqlManager.con = DriverManager.getConnection("jdbc:sqlite:stats.db");
 		} catch (Exception e) {
-			System.err.println("Hoppala... " + e.getClass().getName() + ": " + e.getMessage());
+			System.err.println("Error... " + e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 		System.out.println("Opened database successfully");
+	}
+	
+	public static void InsertClan(String tag, long date, String name, int memberCount, int score, int requiredScore, int donations) {
+		String sql = String.format("INSERT INTO Clan (Tag, Date, Name, MemberCount, Score, RequiredScore, Donations)"
+								+ " VALUES (\"%s\", %d, \"%s\", %d, %d, %d, %d)", tag, date, name, memberCount, score, requiredScore, donations);
+		executeUpdate(sql);
+	}
+	
+	public static void InsertClanChest(String clantag, long clandate, int clanChestCrowns, int clanChestCrownsRequired) {
+		String sql = String.format("INSERT INTO ClanChest (ClanTag, ClanDate, ClanChestCrowns, ClanChestCrownsRequired)"
+								+ " VALUES (\"%s\", %d, %d, %d)", clantag, clandate, clanChestCrowns, clanChestCrownsRequired);
+		executeUpdate(sql);
+	}
+	
+	public static void InsertClanMember(String tag, String clantag, long clandate, String name, int level, int trophies, int score, int donation, int clanChestCrowns, String roleName) {
+		String sql = String.format("INSERT INTO ClanMember (Tag, ClanTag, ClanDate, Name, Level, Trophies, Score, Donation, ClanChestCrowns, RoleName)"
+								+ " VALUES (\"%s\", \"%s\", %d, \"%s\", %d, %d, %d, %d, %d, \"%s\")", tag, clantag, clandate, name, level, trophies, score, donation, clanChestCrowns, roleName);
+		executeUpdate(sql);
 	}
 
 	public static void executeUpdate(String sqlStatement) {
@@ -24,9 +42,9 @@ public class SqlManager {
 			stmt.executeUpdate(sqlStatement);
 			stmt.close();
 
-			System.out.println("SQL-Update ausgeführt");
+//			System.out.println("Executed Update");
 		} catch (SQLException e) {
-			System.err.println("Hoppala... executeUpdate meldet Fehler in: " + e.getClass().getName() + ": " + e.getMessage());
+			System.err.println("Error... executeUpdate: " + e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
 
@@ -38,10 +56,10 @@ public class SqlManager {
 			ResultSet rs = stmt.executeQuery(sqlStatement);
 			// TODO stmt.close();
 
-			System.out.println("SQL-Query ausgeführt");
+//			System.out.println("Executed Query");
 			return rs;
 		} catch (Exception e) {
-			System.err.println("Hoppala... executeQuery meldet Fehler in: " + e.getClass().getName() + ": " + e.getMessage());
+			System.err.println("Error... executeQuery: " + e.getClass().getName() + ": " + e.getMessage());
 			return null;
 		}
 	}
@@ -49,109 +67,50 @@ public class SqlManager {
 	public static void disconnect() {
 		try {
 			SqlManager.con.close();
-			System.out.println("Verbindung getrennt");
+			System.out.println("Connection terminated");
 		} catch (SQLException e) {
-			System.err.println("Hoppala... " + e.getClass().getName() + ": " + e.getMessage());
+			System.err.println("Error... " + e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 	}
 
 	public static void setupDataBase() {
-		SqlManager.executeUpdate("CREATE TABLE CHARTERCOMPANY "
-							+ "(ID INTEGER PRIMARY KEY,"
-							+ " NAME TEXT NOT NULL, "
-							+ " STREET TEXT, "
-							+ " ZIP TEXT, "
-							+ " CITY TEXT, "
-							+ " TEL TEXT, "
-							+ " FAX TEXT, "
-							+ " EMAIL TEXT, "
-							+ " HOMEPAGE TEXT, "
-							+ " CUSTOMER_NR TEXT, "
-							+ " BOOTSMANN TEXT, "
-							+ " ADDITIONAL TEXT)");
-
-		SqlManager.executeUpdate("CREATE TABLE SAILOR "
-							+ "(ID INTEGER PRIMARY KEY, "
-							+ " FIRSTNAME TEXT NOT NULL, "
-							+ " LASTNAME TEXT NOT NULL, "
-							+ " NATIONALITY TEXT, "
-							+ " STREET TEXT, "
-							+ " ZIP TEXT, "
-							+ " CITY TEXT, "
-							+ " TEL TEXT, "
-							+ " MOBILE TEXT, "
-							+ " FAX TEXT, "
-							+ " EMAIL TEXT, "
-							+ " EMERGENCY_NAME1 TEXT, "
-							+ " EMERGENCY_NAME2 TEXT, "
-							+ " EMERGENCY_PHONE1 TEXT, "
-							+ " EMERGENCY_PHONE2 TEXT, "
-							+ " ADDITIONAL TEXT)");
-
-		SqlManager.executeUpdate("CREATE TABLE DOCUMENT "
-							+ "(ID INTEGER PRIMARY KEY, "
-							+ " NAME TEXT NOT NULL, "
-							+ " OWNER INTEGER NOT NULL, "
-							+ " DATE TEXT, "
-							+ " ADDITIONAL TEXT, "
-							
-							+ " FOREIGN KEY (OWNER) REFERENCES SAILOR(ID) ON DELETE CASCADE)");
-
-		SqlManager.executeUpdate("CREATE TABLE YACHT "
-							+ "(ID INTEGER PRIMARY KEY, "
-							+ " NAME TEXT NOT NULL, "
-							+ " TYPE TEXT, "
-							+ " MANUFACTURER TEXT, "
-							+ " YEAR TEXT, "
-							+ " KABINEN TEXT, "
-							+ " KOJEN TEXT, "
-							+ " MOTOR TEXT, "
-							+ " MOTOR_PS TEXT, "
-							+ " MOTOR_FUEL TEXT, "
-							+ " MOTOR_TANKSIZE TEXT, "
-							+ " MOTOR_COMMENT TEXT, "
-							+ " WATER_TANKSIZE TEXT, "
-							+ " DEPTH TEXT, "
-							+ " RUFZEICHEN TEXT, "
-							+ " MMSI TEXT, "
-							+ " ADDITIONAL TEXT, "
-							
-							+ " CHARTERCOMPANY INTEGER NOT NULL, "
-							+ " FOREIGN KEY (CHARTERCOMPANY) REFERENCES CHARTERCOMPANY(ID) ON DELETE NO ACTION)");
-
-		SqlManager.executeUpdate("CREATE TABLE CREW "
-							+ "(ID INTEGER PRIMARY KEY, "
-							+ " STARTDATE TEXT NOT NULL, "
-							+ " ENDDATE TEXT NOT NULL, "
-							+ " STARTHARBOUR TEXT, "
-							+ " ENDHARBOUR TEXT, "
-							+ " CREWPHONE TEXT, "
-							+ " ADDITIONAL TEXT, "
-							
-							+ " YACHT INTEGER NOT NULL, "
-							+ " CHARTERCOMPANY INTEGER NOT NULL, "
-							
-							+ " FOREIGN KEY (YACHT) REFERENCES YACHT(ID) ON DELETE NO ACTION, "
-							+ " FOREIGN KEY (CHARTERCOMPANY) REFERENCES CHARTERCOMPANY(ID) ON DELETE NO ACTION)");
-
-		SqlManager.executeUpdate("CREATE TABLE SAILOR_IN_CREW "
-							+ "(SAILOR INTEGER NOT NULL, "
-							+ " CREW INTEGER NOT NULL, "
-							
-							+ " FOREIGN KEY (SAILOR) REFERENCES SAILOR(ID) ON DELETE CASCADE, "
-							+ " FOREIGN KEY (CREW) REFERENCES CREW(ID) ON DELETE NO ACTION)");
-
-		SqlManager.executeUpdate("CREATE TABLE BORDKASSE_ENTRY "
-							+ "(ID INTEGER PRIMARY KEY, "
-							+ " AMOUNT INTEGER NOT NULL, "
-							+ " DATE TEXT NOT NULL, "
-							+ " COMMENT TEXT, "
-							
-							+ " CREW INTEGER NOT NULL, "
-							+ " SAILOR INTEGER NOT NULL, "
-							
-							+ " FOREIGN KEY (SAILOR) REFERENCES SAILOR(ID) ON DELETE CASCADE, "
-							+ " FOREIGN KEY (CREW) REFERENCES CREW(ID) ON DELETE CASCADE)");
+		SqlManager.executeUpdate("CREATE TABLE IF NOT EXISTS Clan "
+								+ "(Tag TEXT NOT NULL, "
+								+ " Date INTEGER NOT NULL, "
+				
+								+ " Name TEXT, "
+								+ " MemberCount INTEGER, "
+								+ " Score INTEGER, "
+								+ " RequiredScore INTEGER, "
+								+ " Donations INTEGER, "
+				
+								+ " PRIMARY KEY (Tag, Date))");
+				
+		SqlManager.executeUpdate("CREATE TABLE IF NOT EXISTS ClanChest "
+								+ "(ClanTag TEXT NOT NULL, "
+								+ " ClanDate INTEGER NOT NULL, "
+				
+								+ " ClanChestCrowns INTEGER, "
+								+ " ClanChestCrownsRequired INTEGER, "
+								
+								+ " PRIMARY KEY (ClanTag, ClanDate), "				
+								+ " FOREIGN KEY (ClanTag, ClanDate) REFERENCES Clan(Tag, Date) ON DELETE CASCADE)");
+				
+		SqlManager.executeUpdate("CREATE TABLE IF NOT EXISTS ClanMember "
+								+ "(Tag TEXT,"
+								+ " ClanTag TEXT NOT NULL, "
+								+ " ClanDate INTEGER NOT NULL, "
+				
+								+ " Name TEXT, "
+								+ " Level INTEGER, "
+								+ " Trophies INTEGER, "
+								+ " Score INTEGER, "
+								+ " Donation INTEGER, "
+								+ " ClanChestCrowns INTEGER, "
+								+ " RoleName TEXT, "
+								
+								+ " PRIMARY KEY (Tag, ClanDate), "				
+								+ " FOREIGN KEY (ClanTag, ClanDate) REFERENCES Clan(Tag, Date) ON DELETE CASCADE)");
 	}
 }
