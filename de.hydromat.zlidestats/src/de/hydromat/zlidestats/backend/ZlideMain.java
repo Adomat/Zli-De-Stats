@@ -18,7 +18,7 @@ public class ZlideMain {
 		minerList.add(new ZlideMiner("2GPRJJG")); // Zli de Royale #2
 		minerList.add(new ZlideMiner("2R92CURQ")); // Zli de Royale #3
 		
-		ZlideCrawler crawler = new ZlideCrawler(minerList, 8*60*60*1000); // every 8 hours in milisecs
+		ZlideCrawler crawler = new ZlideCrawler(minerList, 2*60*60*1000); // every 8 hours in milisecs
 		crawler.run();
 		
 //		ResultSet rs = SqlManager.executeQuery("SELECT * FROM ClanMember");
