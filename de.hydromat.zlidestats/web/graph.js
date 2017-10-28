@@ -1,6 +1,5 @@
 function Graph () {
-	this.title;
-    this.data;
+    this.dataArrays = [];
     
     this.lowestTime;
     this.highestTime;
@@ -10,42 +9,72 @@ function Graph () {
     this.timeRange;
     this.dataRange;
     
-    this.addData = function(title, data) {
-    	this.title = title;
-        this.data = data;
+    
+    
+    this.addData = function(data) {
+    	this.dataArrays[this.dataArrays.length] = data;
+    	
+    	this.resizeGraph();
+    };
+    
+    
+    this.removeData = function(key) {
+    	console.log(key);
+    	for(var i=0; i<this.dataArrays.length; i++) {
+    		if(this.dataArrays[i].getKey() === key) {
+    			this.dataArrays.splice(i, 1);
+    			
+    			break;
+    		}
+    	}
+    	
+    	this.resizeGraph();
+    };
+    
+    this.resizeGraph = function() {
+    	if(this.dataArrays.length === 0)
+    		return;
+    	
+    	this.lowestTime = this.dataArrays[0].getData()[0].getTime();
+        this.highestTime = this.dataArrays[0].getData()[0].getTime();
         
-        this.lowestTime = this.data[0].getTime();
-        this.highestTime = this.data[0].getTime();
+        this.lowestData = this.dataArrays[0].getData()[0].getData();
+        this.highestData = this.dataArrays[0].getData()[0].getData();
         
-        this.lowestData = this.data[0].getData();
-        this.highestData = this.data[0].getData();
+        for(var j=0; j<this.dataArrays.length; j++) {
+        	for(var i=0; i<this.dataArrays[j].getData().length; i++) {
+        		var inspectedTime = this.dataArrays[j].getData()[i].getTime();
+        		var inspectedData = this.dataArrays[j].getData()[i].getData();
+        		
+                if(inspectedTime < this.lowestTime)
+                    this.lowestTime = inspectedTime;
+                if(inspectedTime > this.highestTime)
+                    this.highestTime = inspectedTime;
+                
+                if(inspectedData < this.lowestData)
+                    this.lowestData = inspectedData;
+                if(inspectedData > this.highestData)
+                    this.highestData = inspectedData;
+                
+            }
+        }
         
-        for(var i=0; i<this.data.length; i++) {
-            if(this.data[i].getTime() < this.lowestTime)
-                this.lowestTime = this.data[i].getTime();
-            if(this.data[i].getTime() > this.highestTime)
-                this.highestTime = this.data[i].getTime();
-            
-            if(this.data[i].getData() < this.lowestData)
-                this.lowestData = this.data[i].getData();
-            if(this.data[i].getData() > this.highestData)
-                this.highestData = this.data[i].getData();
+        if(this.lowestData - this.highestData === 0) {
+        	this.lowestData -= 1;
+        	this.highestData += 1;
         }
         
         this.timeRange = this.highestTime - this.lowestTime;
         this.dataRange = this.highestData - this.lowestData;
     };
     
+    
+    
+    
+    
+    
     this.draw = function(ctx, x, y, width, height, opacity) {
-        ctx.font = '12pt Arial';
-        ctx.textAlign = "center";
-		ctx.fillStyle = "rgba(255,255,255," + opacity*0.5 + ")";
-		ctx.fillText(this.title, x+width/2, y+25);
-        
-        
-
-        
-        var plotMargin = 50;
+    	var plotMargin = 50;
         var plotWidth = width - 2 * plotMargin;
         var plotHeight = height - 2 * plotMargin;
         
@@ -78,7 +107,7 @@ function Graph () {
             ctx.fillText(i, x, linePosition-1);
         }
 
-        ctx.strokeStyle = "rgba(255,255,255," + opacity*0.05 + ")";
+        /*ctx.strokeStyle = "rgba(255,255,255," + opacity*0.05 + ")";
         for(var i=dataAtFirstLine; i<=dataAtLastLine; i+=gridStep/10) {
             var linePosition = y + height - plotMargin;
             linePosition -= plotHeight * ((i - this.lowestData) / this.dataRange);
@@ -87,7 +116,7 @@ function Graph () {
             ctx.moveTo(x, linePosition);
             ctx.lineTo(x+width, linePosition);
             ctx.stroke();
-        }
+        }*/
         
         
         
@@ -97,36 +126,38 @@ function Graph () {
         var xPositionOld;
         var yPositionOld;
         
-        for(var i=0; i<this.data.length; i++) {
-            var xPosition = x + plotMargin;
-            xPosition += plotWidth * ((this.data[i].getTime() - this.lowestTime) / this.timeRange);
-            
-            var yPosition = y + height - plotMargin;
-            yPosition -= plotHeight * ((this.data[i].getData() - this.lowestData) / this.dataRange);
-            
-            // draw a line between the points
-            ctx.strokeStyle = "rgba(46,135,40, " + opacity + ")";
-            ctx.lineWidth = lineWidth;
-            if(i>0) {
-            	ctx.beginPath();
-                ctx.moveTo(xPositionOld, yPositionOld);
-                ctx.lineTo(xPosition, yPosition);
-                ctx.stroke();
-            }
-            
-            xPositionOld = xPosition;
-            yPositionOld = yPosition;
-        }
         
-        for(var i=0; i<this.data.length; i++) {
-            var xPosition = x + plotMargin;
-            xPosition += plotWidth * ((this.data[i].getTime() - this.lowestTime) / this.timeRange);
-            
-            var yPosition = y + height - plotMargin;
-            yPosition -= plotHeight * ((this.data[i].getData() - this.lowestData) / this.dataRange);
-            
-            // draw the data points
-            this.data[i].draw(ctx, xPosition, yPosition, lineWidth, opacity);
+        for(var a=0; a<this.dataArrays.length; a++) {
+        	for(var i=0; i<this.dataArrays[a].getData().length; i++) {
+                // draw a line between the points
+                var xPosition = x + plotMargin;
+                xPosition += plotWidth * ((this.dataArrays[a].getData()[i].getTime() - this.lowestTime) / this.timeRange);
+                
+                var yPosition = y + height - plotMargin;
+                yPosition -= plotHeight * ((this.dataArrays[a].getData()[i].getData() - this.lowestData) / this.dataRange);
+                
+                ctx.strokeStyle = "rgba("+this.dataArrays[a].getColor()+", " + opacity + ")";
+                ctx.lineWidth = lineWidth;
+                if(i>0) {
+                	ctx.beginPath();
+                    ctx.moveTo(xPositionOld, yPositionOld);
+                    ctx.lineTo(xPosition, yPosition);
+                    ctx.stroke();
+                }
+                
+                xPositionOld = xPosition;
+                yPositionOld = yPosition;
+                
+
+                // draw the data points
+                var xPosition = x + plotMargin;
+                xPosition += plotWidth * ((this.dataArrays[a].getData()[i].getTime() - this.lowestTime) / this.timeRange);
+                
+                var yPosition = y + height - plotMargin;
+                yPosition -= plotHeight * ((this.dataArrays[a].getData()[i].getData() - this.lowestData) / this.dataRange);
+                
+                this.dataArrays[a].getData()[i].draw(ctx, xPosition, yPosition, lineWidth/2, this.dataArrays[a].getColor(), opacity, this.dataArrays[a].getUnit());
+            }
         }
     };
 }
@@ -139,30 +170,59 @@ function Graph () {
 
 
 
-
+function DataArray () {
+    this.array = [];
+    this.key = "";
+    this.color = "255,255,255";
+    this.unit = "";
+    
+    this.init = function(key, color, unit) {
+    	this.key = key;
+    	this.color = color;
+        this.unit = unit;
+    };
+    
+    this.addData = function(dataPoint) {
+    	this.array[this.array.length] = dataPoint;
+    };
+    
+    this.getData = function(dataPoint) {
+    	return this.array;
+    };
+    
+    this.getKey = function() {
+    	return this.key;
+    };
+    
+    this.getUnit = function() {
+    	return this.unit;
+    };
+    
+    this.getColor = function() {
+    	return this.color;
+    };
+}
 
 
 
 function DataPoint () {
     this.time;
     this.data;
-    this.unit;
     
-    this.init = function(time, data, unit) {
+    this.init = function(time, data) {
         this.time = time;
         this.data = data;
-        this.unit = unit;
     };
     
-    this.draw = function(ctx, x, y, radius, opacity) {
-        ctx.fillStyle = "rgba(46,135,40," + opacity + ")";
-        ctx.strokeStyle = "rgba(255,255,255," + opacity + ")";
-        ctx.lineWidth = 2;
+    this.draw = function(ctx, x, y, radius, color, opacity, unit) {
+        ctx.fillStyle = "rgba("+color+"," + opacity + ")";
+//        ctx.strokeStyle = "rgba(255,255,255," + opacity + ")";
+//        ctx.lineWidth = 2;
         
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2*Math.PI);
         ctx.fill();
-        ctx.stroke();
+//        ctx.stroke();
         
         if(this.mouseOver(x, y, radius)) {
             ctx.font = '12pt Consolas';
@@ -172,7 +232,7 @@ function DataPoint () {
         	var dateString = dateEntry.getDate() + "." + (dateEntry.getMonth()+1) + "." + dateEntry.getFullYear() + " - " + dateEntry.getHours() + ":" + dateEntry.getMinutes() + " Uhr";
         	var dateWidth = ctx.measureText(dateString).width;
         	
-        	var dataString = this.data + " " + this.unit;
+        	var dataString = this.data + " " + unit;
         	var dataWidth = ctx.measureText(dataString).width;
         	
         	// Background Square
@@ -180,17 +240,17 @@ function DataPoint () {
     		ctx.strokeStyle = "rgba(0, 0, 0, " + opacity*0.5 + ")";
     		ctx.lineWidth = 1;
     		
-    		ctx.fillRect(mouse.x-Math.max(dateWidth, dataWidth)-5, mouse.y-45, Math.max(dateWidth, dataWidth)+10, 40);
-    		ctx.strokeRect(mouse.x-Math.max(dateWidth, dataWidth)-5, mouse.y-45, Math.max(dateWidth, dataWidth)+10, 40);
+    		ctx.fillRect(mouse.x-Math.max(dateWidth, dataWidth)-15, mouse.y-45, Math.max(dateWidth, dataWidth)+10, 40);
+    		ctx.strokeRect(mouse.x-Math.max(dateWidth, dataWidth)-15, mouse.y-45, Math.max(dateWidth, dataWidth)+10, 40);
     		
         	// Text
-	        ctx.textAlign = "right";
+	        ctx.textAlign = "left";
 	        
     		ctx.fillStyle = "rgba(255,255,255," + opacity + ")";
-            ctx.fillText(dataString, mouse.x, mouse.y-30);
+            ctx.fillText(dataString, mouse.x-10-Math.max(dateWidth, dataWidth), mouse.y-30);
             
     		ctx.fillStyle = "rgba(255,255,255," + opacity*0.5 + ")";
-            ctx.fillText(dateString, mouse.x, mouse.y-10);
+            ctx.fillText(dateString, mouse.x-10-Math.max(dateWidth, dataWidth), mouse.y-10);
         }
     };
     

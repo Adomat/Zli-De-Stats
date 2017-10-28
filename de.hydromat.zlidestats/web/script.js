@@ -2,7 +2,7 @@ var canvas;
 var ctx;
 var backgroundImage;
 
-var page = "loading";
+var page = "stats";
 var pageChanger;
 var contextmenu = 0;
 var time;
@@ -116,7 +116,7 @@ function draw() {
     ctx.font = '6pt Lucida Console';
     ctx.textAlign = "right";
 	ctx.fillStyle = "rgba(255,255,255,0.5)";
-	ctx.fillText(trueFPS, width-2, 10);
+	ctx.fillText(trueFPS + " - " + width + ", " + height, width-2, 10);
 }
 
 

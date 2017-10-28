@@ -55,8 +55,8 @@ function playIconIdleAnimation() {
 
 
 function playIconSwapAnimation() {
-	if(page === "stats" && animationTimer.getProgressPercent() == 1)
-		animationTimer.start("swap", 666);
+	//if(page === "stats" && animationTimer.getProgressPercent() == 1)
+	animationTimer.start("swap", 666);
 }
 
 function playIconSwapAnimationReverse() {
