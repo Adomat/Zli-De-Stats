@@ -19,7 +19,6 @@ function Graph () {
     
     
     this.removeData = function(key) {
-    	console.log(key);
     	for(var i=0; i<this.dataArrays.length; i++) {
     		if(this.dataArrays[i].getKey() === key) {
     			this.dataArrays.splice(i, 1);
@@ -228,8 +227,7 @@ function DataPoint () {
             ctx.font = '12pt Consolas';
             
         	// variables
-            var dateEntry = new Date(this.time);
-        	var dateString = dateEntry.getDate() + "." + (dateEntry.getMonth()+1) + "." + dateEntry.getFullYear() + " - " + dateEntry.getHours() + ":" + dateEntry.getMinutes() + " Uhr";
+        	var dateString = millisToDate(this.time);
         	var dateWidth = ctx.measureText(dateString).width;
         	
         	var dataString = this.data + " " + unit;

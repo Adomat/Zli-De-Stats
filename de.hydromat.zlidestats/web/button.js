@@ -10,7 +10,7 @@ function Button () {
     this.fixedSize = -1;
     this.alignment = "left";
     this.enabled = false;
-    this.hasCheckBox = false;
+    this.iCheckBox = false;
     
     this.init = function(text, x, y, fontSize) {
     	this.text = text;
@@ -41,48 +41,46 @@ function Button () {
     	var margin = this.fontSize * 1.2 + 5 - this.fontSize;
     	if(this.fixedSize != -1)
     		this.width = this.fixedSize;
-    	
+
+		// Button
+        ctx.lineWidth = 1;
+		ctx.strokeStyle = "rgba("+this.backGroundColor+"," + opacity*0.5 + ")";
+		ctx.fillRect(x-margin, y-margin, this.width+margin*2, fontSize+margin*2);
+		ctx.strokeRect(x-margin, y-margin, this.width+margin*2, fontSize+margin*2);
+		
     	// CheckBox
-    	if(this.hasCheckBox) {
-    		ctx.fillRect(x-margin-(fontSize+margin*2)-5, y-margin, fontSize+margin*2, fontSize+margin*2);
-    		ctx.strokeRect(x-margin-(fontSize+margin*2)-5, y-margin, fontSize+margin*2, fontSize+margin*2);
+    	if(this.isCheckBox) {
     		
     		if(this.enabled) {
     			// graphColor
     			ctx.strokeStyle = "rgba(255,255,255, " + opacity*0.75 + ")";
                 ctx.lineWidth = 3;
             	ctx.beginPath();
-            	var hx = x-margin-(fontSize+margin*2)-5;
+            	var hx = x-margin;
             	var hy = y-margin;
                 ctx.moveTo(hx+5, hy+15);
                 ctx.lineTo(hx+10, hy+20);
                 ctx.lineTo(hx+22, hy+5);
                 ctx.stroke();
     		}
-    	}
-        
-    	
-    	// Button
-        ctx.lineWidth = 1;
-		ctx.strokeStyle = "rgba("+this.backGroundColor+"," + opacity*0.5 + ")";
-		ctx.fillRect(x-margin, y-margin, this.width+margin*2, fontSize+margin*2);
-		ctx.strokeRect(x-margin, y-margin, this.width+margin*2, fontSize+margin*2);
+    	} else {
 
-		
-		// Font
-    	var fontOpacity = opacity*0.75;
-    	if(this.mouseOver())
-    		fontOpacity = opacity*2;
-		ctx.fillStyle = "rgba("+this.foreGroundColor+"," + fontOpacity + ")";
-    	
-    	ctx.textAlign = this.alignment;
-    	var offSet = 0;
-    	if(this.alignment === "center")
-    		offSet += this.width/2;
-    	else if(this.alignment === "right")
-    		offSet += this.width;
-        
-        ctx.fillText(this.text, x+offSet, y+fontSize);
+    		
+    		// Font
+        	var fontOpacity = opacity*0.75;
+        	if(this.mouseOver())
+        		fontOpacity = opacity*2;
+    		ctx.fillStyle = "rgba("+this.foreGroundColor+"," + fontOpacity + ")";
+        	
+        	ctx.textAlign = this.alignment;
+        	var offSet = 0;
+        	if(this.alignment === "center")
+        		offSet += this.width/2;
+        	else if(this.alignment === "right")
+        		offSet += this.width;
+            
+            ctx.fillText(this.text, x+offSet, y+fontSize);
+    	}
     };
     
     this.drawAtPosition = function(x, y, opacity) {
@@ -114,6 +112,10 @@ function Button () {
     	this.text = text;
     };
     
+    this.getText = function(text) {
+    	return this.text;
+    };
+    
     this.getWidth = function() {
     	return this.width;
     };
@@ -138,8 +140,8 @@ function Button () {
     	this.alignment = align;
     };
     
-    this.addCheckBox = function() {
-    	this.hasCheckBox = true;
+    this.makeCheckBox = function() {
+    	this.isCheckBox = true;
     };
     
     this.toggle = function() {
