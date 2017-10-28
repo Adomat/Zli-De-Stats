@@ -1,16 +1,16 @@
-var clanButtons;
+var clanButtonsToBeRemoved;
 var hasLeftButtons = true;
 
 
 function setupMainMenu() {
-	clanButtons = [];
+	clanButtonsToBeRemoved = [];
 	
 	for(var i=0; i<3; i++) {
-		clanButtons[i] = new Button();
-		clanButtons[i].init("Zli De Royale #"+(i+1), width/2, height/2, 16);
-		clanButtons[i].setBackGround(0,0,0);
-		clanButtons[i].setForeGround(255,255,255);
-		clanButtons[i].setBackGroundOpacity(0.2);
+		clanButtonsToBeRemoved[i] = new Button();
+		clanButtonsToBeRemoved[i].init("Zli De Royale #"+(i+1), width/2, height/2, 16);
+		clanButtonsToBeRemoved[i].setBackGround("0,0,0");
+		clanButtonsToBeRemoved[i].setForeGround("255,255,255");
+		clanButtonsToBeRemoved[i].setBackGroundOpacity(0.2);
 	}
 }
 
@@ -34,18 +34,18 @@ function drawMainMenu(opacity) {
     ctx.lineTo(width/2, height/2-130);
     ctx.stroke();
     
-    if(!clanButtons[0].mouseOver() && !clanButtons[1].mouseOver() && !clanButtons[2].mouseOver()) {
+    if(!clanButtonsToBeRemoved[0].mouseOver() && !clanButtonsToBeRemoved[1].mouseOver() && !clanButtonsToBeRemoved[2].mouseOver()) {
     	hasLeftButtons = true;
 	}
 
     for(var i=0; i<3; i++) {
-		clanButtons[i].drawAtPosition(width/2 + i*200, height/2+150, opacity);
+		clanButtonsToBeRemoved[i].drawAtPosition(width/2 + i*200, height/2+150, opacity);
 		
     	ctx.textAlign = "center";
     	ctx.font = '200pt Arial';
     	ctx.fillStyle = "rgba(255, 255, 255, "+ opacity*0.1 +")";
     	
-    	if(clanButtons[i].mouseOver()) {
+    	if(clanButtonsToBeRemoved[i].mouseOver()) {
         	ctx.fillStyle = "rgba(255, 255, 255, "+ opacity*0.5 +")";
         	if(hasLeftButtons) {
             	playIconIdleAnimation();
@@ -53,17 +53,18 @@ function drawMainMenu(opacity) {
         	}
     	}
     	
-    	ctx.fillText((i+1), width/2 + i*200 + clanButtons[i].getWidth()/2, height/2+120);
+    	ctx.fillText((i+1), width/2 + i*200 + clanButtonsToBeRemoved[i].getWidth()/2, height/2+120);
 	}
 }
 
 
 function handleMouseClickMainMenu() {
-	for(var i=0; i<clanButtons.length; i++) {
- 	   if(clanButtons[i].mouseOver()) {
- 		   pageChanger.start("stats", 1000);
+	for(var i=0; i<clanButtonsToBeRemoved.length; i++) {
+ 	   if(clanButtonsToBeRemoved[i].mouseOver()) {
+ 		   pageChanger.start("stats", 500);
  		   page = "stats";
  		   playIconSwapAnimation();
+ 		   currentClan = i;
  	   }
     }
 }

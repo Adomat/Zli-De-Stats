@@ -4,9 +4,13 @@ function Button () {
     this.x;
     this.y;
     this.width;
-    var foreGroundColor;
-    var backGroundColor;
+    this.foreGroundColor;
+    this.backGroundColor;
     this.backGroundOpacity;
+    this.fixedSize = -1;
+    this.alignment = "left";
+    this.enabled = false;
+    this.hasCheckBox = false;
     
     this.init = function(text, x, y, fontSize) {
     	this.text = text;
@@ -14,8 +18,8 @@ function Button () {
         this.x = x;
         this.y = y;
 
-        this.foreGroundColor = function () {  return {  r: 255,  g: 255,  b: 255  };  };
-        this.backGroundColor = function () {  return {  r: 0,  g: 0,  b: 0  };  };
+        this.foreGroundColor = "255, 255, 255";
+        this.backGroundColor = "0, 0, 0";
     };
     
     this.drawAdvanced = function(x, y, fontSize, opacity) {
@@ -23,30 +27,62 @@ function Button () {
     	this.y = y;
     	this.fontSize = fontSize;
     	
-    	// Button
-        ctx.font = fontSize+'pt Arial';
-    	this.width = ctx.measureText(this.text).width;
-    	
+    	//Calculate variables
     	var rectOpacity = opacity*this.backGroundOpacity;
     	if(this.mouseOver())
     		rectOpacity *= 2;
     	
-		ctx.fillStyle = "rgba("+this.backGroundColor.r+","+this.backGroundColor.g+","+this.backGroundColor.b+"," + rectOpacity + ")";
-		ctx.strokeStyle = "rgba("+this.backGroundColor.r+","+this.backGroundColor.g+","+this.backGroundColor.b+"," + opacity*0.5 + ")";
+		ctx.fillStyle = "rgba("+this.backGroundColor+"," + rectOpacity + ")";
+		ctx.strokeStyle = "rgba("+this.backGroundColor+"," + opacity*0.5 + ")";
 		ctx.lineWidth = 1;
 		
-		ctx.fillRect(x-5, y-5, this.width+10, fontSize*1.3+10);
-		ctx.strokeRect(x-5, y-5, this.width+10, fontSize*1.3+10);
+        ctx.font = fontSize+'pt Arial';
+    	this.width = ctx.measureText(this.text).width;
+    	var margin = this.fontSize * 1.2 + 5 - this.fontSize;
+    	if(this.fixedSize != -1)
+    		this.width = this.fixedSize;
+    	
+    	// CheckBox
+    	if(this.hasCheckBox) {
+    		ctx.fillRect(x-margin-(fontSize+margin*2)-5, y-margin, fontSize+margin*2, fontSize+margin*2);
+    		ctx.strokeRect(x-margin-(fontSize+margin*2)-5, y-margin, fontSize+margin*2, fontSize+margin*2);
+    		
+    		if(this.enabled) {
+    			// graphColor
+    			ctx.strokeStyle = "rgba(255,255,255, " + opacity*0.75 + ")";
+                ctx.lineWidth = 3;
+            	ctx.beginPath();
+            	var hx = x-margin-(fontSize+margin*2)-5;
+            	var hy = y-margin;
+                ctx.moveTo(hx+5, hy+15);
+                ctx.lineTo(hx+10, hy+20);
+                ctx.lineTo(hx+22, hy+5);
+                ctx.stroke();
+    		}
+    	}
+        
+    	
+    	// Button
+        ctx.lineWidth = 1;
+		ctx.strokeStyle = "rgba("+this.backGroundColor+"," + opacity*0.5 + ")";
+		ctx.fillRect(x-margin, y-margin, this.width+margin*2, fontSize+margin*2);
+		ctx.strokeRect(x-margin, y-margin, this.width+margin*2, fontSize+margin*2);
 
 		
 		// Font
-    	ctx.textAlign = "left";
     	var fontOpacity = opacity*0.75;
     	if(this.mouseOver())
     		fontOpacity = opacity*2;
-		ctx.fillStyle = "rgba("+this.foreGroundColor.r+","+this.foreGroundColor.g+","+this.foreGroundColor.b+"," + fontOpacity + ")";
+		ctx.fillStyle = "rgba("+this.foreGroundColor+"," + fontOpacity + ")";
+    	
+    	ctx.textAlign = this.alignment;
+    	var offSet = 0;
+    	if(this.alignment === "center")
+    		offSet += this.width/2;
+    	else if(this.alignment === "right")
+    		offSet += this.width;
         
-        ctx.fillText(this.text, x, y+fontSize);
+        ctx.fillText(this.text, x+offSet, y+fontSize);
     };
     
     this.drawAtPosition = function(x, y, opacity) {
@@ -82,20 +118,39 @@ function Button () {
     	return this.width;
     };
 
-    this.setForeGround = function(r,g,b) {
-    	this.foreGroundColor.r = r;
-    	this.foreGroundColor.g = g;
-    	this.foreGroundColor.b = b;
+    this.setForeGround = function(color) {
+    	this.foreGroundColor.r = color;
     };
     
-    this.setBackGround = function(r,g,b) {
-    	this.backGroundColor.r = r;
-    	this.backGroundColor.g = g;
-    	this.backGroundColor.b = b;
+    this.setBackGround = function(color) {
+    	this.backGroundColor = color;
     };
     
     this.setBackGroundOpacity = function(o) {
     	this.backGroundOpacity = o;
+    };
+    
+    this.setFixedSize = function(size) {
+    	this.fixedSize = size;
+    };
+    
+    this.setTextAlign = function(align) {
+    	this.alignment = align;
+    };
+    
+    this.addCheckBox = function() {
+    	this.hasCheckBox = true;
+    };
+    
+    this.toggle = function() {
+    	if(this.enabled)
+    		this.enabled = false;
+    	else
+    		this.enabled = true;
+    };
+    
+    this.isEnabled = function() {
+    	return this.enabled;
     };
 }
 
