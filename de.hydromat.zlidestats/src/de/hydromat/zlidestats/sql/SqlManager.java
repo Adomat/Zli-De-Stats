@@ -5,10 +5,10 @@ import java.sql.*;
 public class SqlManager {
 	private static Connection con;
 
-	public static void connectToDatabase() {
+	public static void connectToDatabase(String db) {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			SqlManager.con = DriverManager.getConnection("jdbc:sqlite:stats.db");
+			SqlManager.con = DriverManager.getConnection("jdbc:sqlite:" + db);
 		} catch (Exception e) {
 			System.err.println("Error... " + e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);

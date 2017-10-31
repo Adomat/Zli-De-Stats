@@ -10,7 +10,8 @@ import de.hydromat.zlidestats.sql.SqlManager;
 public class ZlideMain {
 
 	public static void main(String[] args) throws SQLException {
-		SqlManager.connectToDatabase();
+		if (args.length == 0) args = new String[] { "stats.db" };
+		SqlManager.connectToDatabase(args[0]);
 		SqlManager.setupDataBase();
 		
 		List<ZlideMiner> minerList = new LinkedList<ZlideMiner>();
