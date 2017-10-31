@@ -16,13 +16,17 @@ function setupIcon() {
 
 function drawIcon(opacity) {
 	ctx.globalAlpha = opacity;
+	var offSetX = (width-660);
+	offSetX = 1/(offSetX/1000) + 200;
+	if(offSetX > 250)
+		offSetX = 250;
 	
 	if(page === "menu") {
 		if(animationTimer.getProgressPercent() === 1) {
-		    ctx.drawImage(iconImages[0], width/2 - iconImages[0].width/2 - 300, height/2 - iconImages[0].height/2);
+		    ctx.drawImage(iconImages[0], width/2 - iconImages[0].width/2 -offSetX, height/2 - iconImages[0].height/2);
 		} else {
 			var pictureNumber = 20 + Math.floor(animationTimer.getProgressPercent() * 20);
-		    ctx.drawImage(iconImages[pictureNumber], width/2 - iconImages[0].width/2 - 300, height/2 - iconImages[0].height/2);
+		    ctx.drawImage(iconImages[pictureNumber], width/2 - iconImages[0].width/2 -offSetX, height/2 - iconImages[0].height/2);
 		}
 	}
 	else if(page === "stats") {

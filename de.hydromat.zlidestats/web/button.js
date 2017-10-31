@@ -33,7 +33,7 @@ function Button () {
     		rectOpacity *= 2;
     	
 		ctx.fillStyle = "rgba("+this.backGroundColor+"," + rectOpacity + ")";
-		ctx.strokeStyle = "rgba("+this.backGroundColor+"," + opacity*0.5 + ")";
+		ctx.strokeStyle = "rgba("+this.backGroundColor+"," + rectOpacity*2 + ")";
 		ctx.lineWidth = 1;
 		
         ctx.font = fontSize+'pt Arial';
@@ -50,7 +50,6 @@ function Button () {
 		
     	// CheckBox
     	if(this.isCheckBox) {
-    		
     		if(this.enabled) {
     			// graphColor
     			ctx.strokeStyle = "rgba(255,255,255, " + opacity*0.75 + ")";
@@ -64,8 +63,6 @@ function Button () {
                 ctx.stroke();
     		}
     	} else {
-
-    		
     		// Font
         	var fontOpacity = opacity*0.75;
         	if(this.mouseOver())
@@ -112,7 +109,7 @@ function Button () {
     	this.text = text;
     };
     
-    this.getText = function(text) {
+    this.getText = function() {
     	return this.text;
     };
     
@@ -121,7 +118,7 @@ function Button () {
     };
 
     this.setForeGround = function(color) {
-    	this.foreGroundColor.r = color;
+    	this.foreGroundColor = color;
     };
     
     this.setBackGround = function(color) {
@@ -149,6 +146,10 @@ function Button () {
     		this.enabled = false;
     	else
     		this.enabled = true;
+    };
+    
+    this.disable = function() {
+		this.enabled = false;
     };
     
     this.isEnabled = function() {

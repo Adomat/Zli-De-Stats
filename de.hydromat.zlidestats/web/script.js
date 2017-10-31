@@ -2,7 +2,7 @@ var canvas;
 var ctx;
 var backgroundImage;
 
-var page = "stats";
+var page = "loading";
 var pageChanger;
 var contextmenu = 0;
 var time;
@@ -13,8 +13,7 @@ var height;
 
 var mouse;
 var pmouse;
-
-var graph;
+var mouseDown;
 
 // ODER: document einen listener auf 'DOMContentLoaded' hinzufügen
 window.addEventListener('load', function(){
@@ -35,16 +34,33 @@ window.addEventListener('load', function(){
     pmouse.y = mouse.y;
     
     canvas.addEventListener('mousemove', function(evt) {
-        pmouse = mouse;
+        //pmouse = mouse;
         mouse = getMousePos(canvas, evt);
     }, false);
     
     canvas.addEventListener('click', function(evt) {
-       handleMouseClick();
+       
     }, false);
     
     canvas.addEventListener('contextmenu', function(evt) {
-       // TODO right-click
+       handleContextMenu();
+    }, false);
+    
+    canvas.addEventListener('mousedown', function(evt) {
+    	mouseDown = true;
+    	handleMouseClick();
+    }, false);
+    
+    canvas.addEventListener('mouseup', function(evt) {
+    	mouseDown = false;
+    }, false);
+
+    canvas.addEventListener("mousewheel", function(evt) {
+    	handleMouseWheelStats(evt);
+    }, false);
+    
+    canvas.addEventListener("DOMMouseScroll", function(evt) {
+    	handleMouseWheelStats(evt);
     }, false);
     
 	backgroundImage = document.getElementById('background');
@@ -52,9 +68,9 @@ window.addEventListener('load', function(){
     graph = new Graph();
     pageChanger = new Timer();
     
-    setupMainMenu();
     setupIcon();
     setupStats();
+    setupMainMenu();
     
     draw();
     
@@ -65,9 +81,6 @@ window.addEventListener('load', function(){
 
 
 function draw() {
-	var trueFPS = Math.round(1000/(new Date().getTime() - time));
-    time = new Date().getTime();
-    
     if(!checkAllContentLoaded()) {
     	console.log("loading");
     } else if(page === "loading") {
@@ -83,6 +96,8 @@ function draw() {
         canvas.height = height;
     }
     
+	
+    
     var blurryness = 0;
     if(page === "loading")
     	drawBackground(5);
@@ -91,11 +106,13 @@ function draw() {
     else
     	drawBackground(10);
     
-    if(page === "loading") {
+    if(width < 660 || height < 660) {
+		drawSmallScreenPrompt();
+	} else if(page === "loading") {
         drawBootAnimation(1);
     } else if(page === "menu") {
-    	drawMainMenu(pageChanger.getProgressPercent());
     	drawIcon(pageChanger.getProgressPercent());
+    	drawMainMenu(pageChanger.getProgressPercent());
     	
     	if(pageChanger.getProgressPercent() < 1 && pageChanger.getPurpose() === "menu")
     		drawStats(1 - pageChanger.getProgressPercent());
@@ -107,11 +124,8 @@ function draw() {
     	drawIcon(1);
     }
 
-    var timePassed = new Date().getTime() - time;
-    var maxTime = 1000/maxFPS;
-    var timeDiff = maxTime - timePassed;
-    
-    setTimeout(draw, Math.max(timeDiff, 0));
+    pmouse = mouse;
+    setTimeout(draw, 0);
     
     ctx.font = '6pt Lucida Console';
     ctx.textAlign = "right";
@@ -127,6 +141,52 @@ function checkAllContentLoaded() {
 	}
 	
 	return true;
+}
+
+
+function drawSmallScreenPrompt() {
+	ctx.fillStyle = "rgba(185,30,30, "+ 0.25 +")";
+	ctx.strokeStyle = "rgba(185,30,30, "+ 1 +")";
+	
+	var signSize = 70;
+	
+	ctx.lineWidth = signSize/10;
+	
+	ctx.beginPath();
+    ctx.moveTo(width/2-signSize, height/2+signSize-65);
+    ctx.lineTo(width/2+signSize, height/2+signSize-65);
+    ctx.lineTo(width/2, height/2-signSize-65);
+    ctx.lineTo(width/2-signSize, height/2+signSize-65);
+    ctx.lineTo(width/2+signSize, height/2+signSize-65);
+    ctx.stroke();
+    ctx.fill();
+    
+    ctx.font = signSize*1.2+'pt Arial';
+    ctx.textAlign = "center";
+	ctx.fillStyle = "rgba(185,30,30, "+ 1 +")";
+	ctx.fillText("!", width/2, height/2+signSize/1.2-65);
+
+	ctx.lineWidth = 1;
+	ctx.fillStyle = "rgba(0, 0, 0, "+ 0.25 +")";
+	ctx.strokeStyle = "rgba(0, 0, 0, "+ 0.5 +")";
+	ctx.fillRect(width/2 - 150, height/2+20, 300, 150-30);
+	ctx.strokeRect(width/2 - 150, height/2+20, 300, 150-30);
+	
+	var problemSentence = "Browserfenster zu klein!";
+	if(width > 660)
+		problemSentence = "Fenster nicht hoch genug!";
+	else if(height > 660)
+		problemSentence = "Fenster nicht breit genug!";
+
+    ctx.font = '16pt Arial';
+	ctx.fillStyle = "rgba(185,30,30, "+ 1 +")";
+	ctx.fillText(problemSentence, width/2, height/2+50);
+
+    ctx.font = '12pt Arial';
+	ctx.fillStyle = "rgba(255, 255, 255, "+ 0.75 +")";
+	ctx.fillText("Wir wollen hier Graphen darstellen.", width/2, height/2+130-50);
+	ctx.fillText("Dein Browser löst diese Seite mit", width/2, height/2+150-50);
+	ctx.fillText("lediglich "+width+" x "+height+" Pixeln auf.", width/2, height/2+170-50);
 }
 
 
@@ -210,6 +270,18 @@ function handleMouseClick() {
 	}
 	if(page === "stats") {
 		handleMouseClickStats();
+	}
+	if(page === "stats") {
+		handleMouseClickPlayerList();
+	}
+}
+
+function handleContextMenu() {
+	if(page === "menu") {
+		//handleMouseClickMainMenu();
+	}
+	if(page === "stats") {
+		handleContextMenuStats();
 	}
 }
 
