@@ -126,11 +126,6 @@ function draw() {
 
     pmouse = mouse;
     setTimeout(draw, 0);
-    
-    ctx.font = '6pt Lucida Console';
-    ctx.textAlign = "right";
-	ctx.fillStyle = "rgba(255,255,255,0.5)";
-	ctx.fillText(trueFPS + " - " + width + ", " + height, width-2, 10);
 }
 
 
