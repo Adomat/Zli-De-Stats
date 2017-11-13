@@ -23,6 +23,7 @@ public class ZlideMiner {
 
 	public void takeSnapshot() {
 		try {
+			System.out.println("Taking snapshot");
 			System.setProperty("http.agent", "");
 			URL url = new URL("http://api.cr-api.com/clan/" + clanTag);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -30,7 +31,10 @@ public class ZlideMiner {
 			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36");
 			
 			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+				System.out.println("False response, trying again in 2s");
+//				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+				Thread.sleep(2000);
+				takeSnapshot();
 			}
 
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
@@ -49,6 +53,8 @@ public class ZlideMiner {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
