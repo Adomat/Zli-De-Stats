@@ -7,7 +7,7 @@ public class Console {
 	private static List<Long> lastMessageTimestamps = new ArrayList<>();
 	private static boolean isSpamming;
 	
-	public static void logError(String message) {
+	public static void logError(String title, String message) {
 		increaseTimestamps();
 		if(isSpamming)
 			return;
@@ -16,11 +16,12 @@ public class Console {
 		// damit wir Bescheid wissen, wenn es Fehler geschmissen wird!
 		
 		System.out.println("---------------------------");
-		System.out.println("ERROR: " + message);
+		System.out.println("ERROR: " + title);
+		System.out.println("\n" + message);
 		System.out.println("---------------------------");
 	}
 
-	public static void logInfo(String message) {
+	public static void logInfo(String title, String message) {
 		increaseTimestamps();
 		if(isSpamming)
 			return;
@@ -29,7 +30,8 @@ public class Console {
 		// allerdings soll es keine Error, sondern eine Info Nachricht werden.
 		
 		System.out.println("---------------------------");
-		System.out.println("INFO: " + message);
+		System.out.println("Info: " + title);
+		System.out.println("\n" + message);
 		System.out.println("---------------------------");
 	}
 	
