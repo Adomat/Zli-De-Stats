@@ -16,7 +16,7 @@ public class MainThread implements Runnable {
 				updateDataBase();
 				Thread.sleep(1000 * 60 * 60 * 8);
 			} catch (InterruptedException e) {
-				Console.logError("Fehler im MainThread, starte neuen Thread", e.getMessage());
+				Console.logError("Fehler im MainThread", e.getMessage());
 				Console.logInfo("Starte neuen Thread", "");
 
 				(new MainThread()).run();
