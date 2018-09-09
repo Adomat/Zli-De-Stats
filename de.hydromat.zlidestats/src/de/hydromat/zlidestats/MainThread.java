@@ -32,7 +32,7 @@ public class MainThread implements Runnable {
 		int clanTrophies = 0;
 		
 		String memberName = "Adomat";
-		int memberTrophies = 4424;
+		int memberTrophies = 4425;
 		int memberDonationsDone = 894;
 		int memberDonationsReceived = 687;
 		/*
