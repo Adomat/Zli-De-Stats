@@ -52,6 +52,6 @@ public class MainThread implements Runnable {
 		// Dies hier sind die (schon fertigen) Methoden, die deine erfragten Daten dann konsistent in einer
 		// Datenbank abspeichern!
 		dbManager.addNewClanEntry(clanTrophies);
-		dbManager.addNewMemberEntry(mamberName, memberTrophies, memberDonationsDone, memberDonationsReceived);
+		dbManager.addNewMemberEntry(memberName, memberTrophies, memberDonationsDone, memberDonationsReceived);
 	}
 }
