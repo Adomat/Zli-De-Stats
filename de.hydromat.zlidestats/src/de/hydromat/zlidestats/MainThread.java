@@ -28,7 +28,7 @@ public class MainThread implements Runnable {
 	private void updateDataBase() {
 		DataBaseManager dbManager = new DataBaseManager();
 		
-		// Nachfolgende Member ...
+		// TODO Nachfolgende Member ...
 		int clanTrophies = 0;
 		
 		String mamberName = "Adomat";
@@ -43,6 +43,10 @@ public class MainThread implements Runnable {
 		 * 
 		 * Der Link für die Dokumentation zur Anfrage an die API, die Du hier brauchst ist:
 		 *     https://docs.royaleapi.com/#/endpoints/clan
+		 * 
+		 * Danach hast Du einen String vorliegen, in dem alle unsere tollen Infos enthalten sind.
+		 * Folgende Seite hilft Dir, die wichtigen Infos rauszuziehen:
+		 *     https://www.codexpedia.com/java/sample-code-for-parsing-json-string-in-java/
 		 */
 
 		// Dies hier sind die (schon fertigen) Methoden, die deine erfragten Daten dann konsistent in einer
