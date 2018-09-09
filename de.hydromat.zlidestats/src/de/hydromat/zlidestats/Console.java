@@ -39,10 +39,10 @@ public class Console {
 		lastMessageTimestamps.add(System.currentTimeMillis());
 		if(lastMessageTimestamps.size() > 5) {
 			lastMessageTimestamps.remove(5);
-		}
-		
-		if(lastMessageTimestamps.get(0) - lastMessageTimestamps.get(4) < 1000*60*5) {
-			isSpamming = true;
+			
+			if(lastMessageTimestamps.get(0) - lastMessageTimestamps.get(4) < 1000*60*5) {
+				isSpamming = true;
+			}
 		}
 	}
 }
