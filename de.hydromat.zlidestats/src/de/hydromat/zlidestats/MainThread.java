@@ -35,7 +35,15 @@ public class MainThread implements Runnable {
 		int memberTrophies = 4424;
 		int memberDonationsDone = 894;
 		int memberDonationsReceived = 687;
-		// ... mit Werten füllen! Dafür die Clash Royale API anfragen und entsprechende Werte herausfinden!
+		/*
+		 * ... mit Werten füllen! Dafür die Clash Royale API anfragen und entsprechende Werte herausfinden!
+		 * 
+		 * Wie man HTTP Requests schickt zeigt diese Seite:
+		 *     https://www.baeldung.com/java-http-request
+		 * 
+		 * Der Link für die Dokumentation zur Anfrage an die API, die Du hier brauchst ist:
+		 *     https://docs.royaleapi.com/#/endpoints/clan
+		 */
 
 		// Dies hier sind die (schon fertigen) Methoden, die deine erfragten Daten dann konsistent in einer
 		// Datenbank abspeichern!
