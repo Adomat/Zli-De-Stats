@@ -31,7 +31,7 @@ public class MainThread implements Runnable {
 		// TODO Nachfolgende Member ...
 		int clanTrophies = 0;
 		
-		String mamberName = "Adomat";
+		String memberName = "Adomat";
 		int memberTrophies = 4424;
 		int memberDonationsDone = 894;
 		int memberDonationsReceived = 687;
