@@ -1,5 +1,11 @@
 package de.hydromat.zlidestats;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+
 public class MainThread implements Runnable {
 	public static long threadTimeStamp;
 
@@ -35,6 +41,30 @@ public class MainThread implements Runnable {
 		int memberTrophies = 4425;
 		int memberDonationsDone = 894;
 		int memberDonationsReceived = 687;
+		
+		URL url = null;
+		try {
+			url = new URL("https://api.royaleapi.com/clan/2R92CURQ");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		HttpURLConnection con = null;
+		try {
+			con = (HttpURLConnection) url.openConnection();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			con.setRequestMethod("GET");
+		} catch (ProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		/* I bims 1 ein Programmierer lol, das soll ein HTTP request sein, Parameter fehlen noch!
+
 		/*
 		 * ... mit Werten füllen! Dafür die Clash Royale API anfragen und entsprechende Werte herausfinden!
 		 * 
