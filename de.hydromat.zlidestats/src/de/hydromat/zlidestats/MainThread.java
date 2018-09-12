@@ -20,23 +20,69 @@ public class MainThread implements Runnable {
 		Console.logInfo("Neuer Thread gestartet", "");
 		while (true) {
 			try {
-				threadTimeStamp = System.currentTimeMillis();
-				updateDataBase();
-				Thread.sleep(1000 * 60 * 60 * 8);
+				if(System.currentTimeMillis() - threadTimeStamp < 1000) {
+					// Sleep 5 Minutes cause this Thread restarted twice within the last second
+					// and we don't want to spam anyone (Clash API or Telegram)
+					Thread.sleep(1000 * 60 * 5);
+				}
+				else {
+					updateDataBase();
+					Thread.sleep(1000 * 60 * 60 * 8);
+				}
 			} catch (InterruptedException e) {
-				Console.logError("Fehler im MainThread", e.getMessage());
-				Console.logInfo("Starte neuen Thread", "");
+				Console.logError("Fehler im MainThread - starte neuen Thread", e.getMessage());
 
 				(new MainThread()).run();
 				return;
+			} catch (IOException e) {
+				Console.logError("Datenbank konnte nicht geupdatet werden", e.getMessage());
+				try {
+					updateDataBase();
+				} catch (IOException e1) {
+					Console.logError("Erneuter Versuch die Datenbank zu updaten fehlgeschlagen - starte neuen Thread", e.getMessage());
+					(new MainThread()).run();
+					return;
+				}
 			}
 		}
 	}
 	
-	private void updateDataBase() {
+	private void updateDataBase() throws IOException {
+		
+		URL url = new URL("https://api.royaleapi.com/clan/2R92CURQ");
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("auth", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYzNCwiaWRlbiI6IjI0MjMyODc0OTc4NDMwMTU2OSIsIm1kIjp7fSwidHMiOjE1MzYzMTQ4MTIwMzh9.pFFAJl83K8qteAVo1L2S6qAq0RKud3YGnedd6jlmUbE");
+		
+		int status = con.getResponseCode();
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		String content = "";
+		
+		while ((inputLine = in.readLine()) != null) {
+			content += inputLine;
+		}
+		
+		in.close();
+		
+		System.out.println(content);
+			
+		/*
+		 * TODO sehr nice bisher, ich habe die ganzen try catch Blöcke ein bisschen aufgeräumt.
+		 * -> In der variable content ist nun die http-response die vom clash server kommt
+		 *    Darin sind alle unsere tollen Infos enthalten.
+		 *    Folgende Seite hilft Dir, die Infos rauszuziehen:
+		 *    
+		 *        https://www.codexpedia.com/java/sample-code-for-parsing-json-string-in-java/
+		 *    
+		 */
+
+		// Dies hier sind die (schon fertigen) Methoden, die deine erfragten Daten dann konsistent in einer
+		// Datenbank abspeichern!
+		
 		DataBaseManager dbManager = new DataBaseManager();
 		
-		// TODO Nachfolgende Member ...
 		int clanTrophies = 0;
 		
 		String memberName = "Adomat";
@@ -44,77 +90,6 @@ public class MainThread implements Runnable {
 		int memberDonationsDone = 894;
 		int memberDonationsReceived = 687;
 		
-		URL url = null;
-		try {
-			url = new URL("https://api.royaleapi.com/clan/2R92CURQ");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		HttpURLConnection con = null;
-		try {
-			con = (HttpURLConnection) url.openConnection();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			con.setRequestMethod("GET");
-		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		con.setRequestProperty("auth", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYzNCwiaWRlbiI6IjI0MjMyODc0OTc4NDMwMTU2OSIsIm1kIjp7fSwidHMiOjE1MzYzMTQ4MTIwMzh9.pFFAJl83K8qteAVo1L2S6qAq0RKud3YGnedd6jlmUbE");
-		try {
-			int status = con.getResponseCode();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		BufferedReader in;
-		try {
-			in = new BufferedReader(
-					new InputStreamReader(con.getInputStream()));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		try {
-			while ((inputLine = in.readLine()) != null) {
-				content.append(inputLine);
-			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			in.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-		
-		
-		/* Hier ist 1 Fehler drin, steht aber auch so im Netz, fix my shit.
-			
-		/*
-		 * ... mit Werten füllen! Dafür die Clash Royale API anfragen und entsprechende Werte herausfinden!
-		 * 
-		 * Wie man HTTP Requests schickt zeigt diese Seite:
-		 *     https://www.baeldung.com/java-http-request
-		 * 
-		 * Der Link für die Dokumentation zur Anfrage an die API, die Du hier brauchst ist:
-		 *     https://docs.royaleapi.com/#/endpoints/clan
-		 * 
-		 * Danach hast Du einen String vorliegen, in dem alle unsere tollen Infos enthalten sind.
-		 * Folgende Seite hilft Dir, die wichtigen Infos rauszuziehen:
-		 *     https://www.codexpedia.com/java/sample-code-for-parsing-json-string-in-java/
-		 */
-
-		// Dies hier sind die (schon fertigen) Methoden, die deine erfragten Daten dann konsistent in einer
-		// Datenbank abspeichern!
 		dbManager.addNewClanEntry(clanTrophies);
 		dbManager.addNewMemberEntry(memberName, memberTrophies, memberDonationsDone, memberDonationsReceived);
 	}
