@@ -1,6 +1,8 @@
 package de.hydromat.zlidestats;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -62,9 +64,41 @@ public class MainThread implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		con.setRequestProperty("auth", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYzNCwiaWRlbiI6IjI0MjMyODc0OTc4NDMwMTU2OSIsIm1kIjp7fSwidHMiOjE1MzYzMTQ4MTIwMzh9.pFFAJl83K8qteAVo1L2S6qAq0RKud3YGnedd6jlmUbE");
+		try {
+			int status = con.getResponseCode();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BufferedReader in;
+		try {
+			in = new BufferedReader(
+					new InputStreamReader(con.getInputStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String inputLine;
+		StringBuffer content = new StringBuffer();
+		try {
+			while ((inputLine = in.readLine()) != null) {
+				content.append(inputLine);
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 		
-		/* I bims 1 ein Programmierer lol, das soll ein HTTP request sein, Parameter fehlen noch!
-
+		
+		/* Hier ist 1 Fehler drin, steht aber auch so im Netz, fix my shit.
+			
 		/*
 		 * ... mit Werten füllen! Dafür die Clash Royale API anfragen und entsprechende Werte herausfinden!
 		 * 
