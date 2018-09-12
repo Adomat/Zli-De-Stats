@@ -11,13 +11,6 @@ function setupGraph(canvasId, data, times, color) {
         times.push(date);
     }
     
-    var borderColors = [color];
-    var backgroundColors = [color];
-    while (borderColors.length < data.length) {
-        backgroundColors.push(backgroundColors[backgroundColors.length - 1]);
-        borderColors.push(borderColors[borderColors.length - 1]);
-    }
-    
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -25,16 +18,14 @@ function setupGraph(canvasId, data, times, color) {
             datasets: [{
                 label: 'Clan Trophies',
                 data: data,
-                backgroundColor: backgroundColors,
-                borderColor: borderColors,
-                pointBackgroundColor: backgroundColors,
-                pointBorderColor: borderColors,
+                backgroundColor: color.replace('1)', '0.25)'),
+                borderColor: color,
 				pointRadius: 0,
                 pointHoverRadius: 0,
 				fill: true,
 				lineTension: 0,
                 type: 'line',
-                borderWidth: 1
+                borderWidth: 2
             }]
         },
         options: {

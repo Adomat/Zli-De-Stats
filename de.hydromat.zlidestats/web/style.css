@@ -30,10 +30,22 @@ div.header {
 
 div.content {
     display: none;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+div.container1 {
+    display: inline-block;
+    max-width: 700px;
+}
+div.container2 {
+    max-width: 700px;
 }
 
 .infoleft1 {
+    text-align: left;
     flex: 1;
+    max-width: 385px;
     display: inline-block;
 }
 
@@ -41,7 +53,6 @@ div.content {
     display: inline-block;
     width: 315px;
     height: 315px;
-    text-align: center;
 }
 
 img {
@@ -109,25 +120,25 @@ canvas {
 
 
 
-@media screen and (min-width: 601px) {
+@media screen and (min-width: 701px) {
     html, body { padding: 10px; }
     
     h1 { margin-left: 0.8em; }
     p { margin-left: 1.5em; }
     
-    div.container {
+    div.container2 {
         display: flex;
         text-align: left;
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 700px) {
     html, body { padding: 3px; }
     
     h1 { margin-left: 0.1em; }
     p { margin-left: 0.25em; }
     
-    div.container {
+    div.container2 {
         display: block;
         text-align: center;
     }
