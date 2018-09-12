@@ -1,0 +1,134 @@
+html, body {
+    padding: 10px;
+    margin: 0px;
+
+    background-color: rgb(230, 230, 230);
+}
+
+div.outer {
+    background-color: rgb(250, 250, 250);
+
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(200, 200, 200);
+
+    max-width: 1200px;
+    min-width: 315px;
+    padding: 5px;
+    margin: auto;
+    margin-top: 10px;
+}
+
+div.outer:hover {
+    background-color: rgb(255, 255, 255);
+}
+
+div.header {
+    display: flex;
+    cursor: pointer;
+}
+
+div.content {
+    display: none;
+}
+
+.infoleft1 {
+    flex: 1;
+    display: inline-block;
+}
+
+.inforight1 {
+    display: inline-block;
+    width: 315px;
+    height: 315px;
+    text-align: center;
+}
+
+img {
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    
+    height: 0.75em;
+    margin: 1.25em;
+    opacity: 0.25;
+}
+
+h1 {
+    font-family: 'Poiret One', cursive;
+    font-size: 1.75em;
+    margin: 0.4em;
+    margin-left: 0.9em;
+    
+    flex: 1;
+    
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+p {
+    color: rgb(100, 100, 100);
+    font-family: 'Slabo 27px', serif;
+    font-size: 1em;
+    margin: 1.5em;
+}
+
+canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
+    /*border-style: solid;
+    border-width: 1px;
+    border-color: rgb(220, 220, 220);*/
+
+    width: auto;
+    height: auto;
+    margin: 0em;
+    
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media screen and (min-width: 601px) {
+    html, body { padding: 10px; }
+    
+    h1 { margin-left: 0.8em; }
+    p { margin-left: 1.5em; }
+    
+    div.container {
+        display: flex;
+        text-align: left;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    html, body { padding: 3px; }
+    
+    h1 { margin-left: 0.1em; }
+    p { margin-left: 0.25em; }
+    
+    div.container {
+        display: block;
+        text-align: center;
+    }
+}
