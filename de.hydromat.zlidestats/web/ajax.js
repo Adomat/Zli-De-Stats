@@ -17,7 +17,7 @@ function handleAPIClanRequest() {
 }
 
 function handleAPIClanRequestAnswer(answer) {
-    setupGraph('clantrophiescanvas', null, null, 'rgba(52, 117, 214, 0.25)');
+    setupGraph('clantrophiescanvas', null, null, 'rgba(52, 117, 214, 1)');
     
     answer.members.sort(function(member1, member2){return member2.donations-member1.donations});
     var data = [];

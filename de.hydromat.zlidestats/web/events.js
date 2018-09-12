@@ -1,11 +1,18 @@
 $(function(){
     $('div.header').click(function(event) {
         infoDiv = event.currentTarget.nextElementSibling;
+        icon = event.currentTarget.children[1];
         
-        if(infoDiv.style.display == 'block')
+        if(infoDiv.style.display == 'block') {
+            // Close Block
             infoDiv.style.display = 'none';
-        else
+            icon.style.transform = 'scaleY(1)';
+        }
+        else {
+            // Open Block
             infoDiv.style.display = 'block';
+            icon.style.transform = 'scaleY(-1)';
+        }
     });
     
     $('div.header').mouseover(function(event) {

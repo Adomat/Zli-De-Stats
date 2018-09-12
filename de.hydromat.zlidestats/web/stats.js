@@ -1,5 +1,6 @@
 function setupGraph(canvasId, data, times, color) {
-    ctx = document.getElementById(canvasId).getContext("2d");
+    var canvas = document.getElementById(canvasId);
+    var ctx = canvas.getContext("2d");
     
     var dateFormat = 'MMMM DD YYYY';
     var date = moment('June 01 2018', dateFormat);
@@ -25,7 +26,7 @@ function setupGraph(canvasId, data, times, color) {
 				fill: true,
 				lineTension: 0,
                 type: 'line',
-                borderWidth: 2
+                borderWidth: 1
             }]
         },
         options: {
@@ -58,6 +59,9 @@ function setupGraph(canvasId, data, times, color) {
             }
         }
     });
+    
+    $('#'+canvasId.replace('canvas', 'div')).show();
+    $('#'+canvasId.replace('canvas', 'loading')).hide();
 }
 
 function randomBar(date, lastClose) {
@@ -79,7 +83,8 @@ function randomNumber(min, max) {
 
 
 function setupPieDiagram(canvasId, data, labels) {
-    ctx = document.getElementById(canvasId).getContext("2d");
+    var canvas = document.getElementById(canvasId);
+    var ctx = canvas.getContext("2d");
     
     var backgroundColors = [
         'rgba(52, 117, 214, 1)',
@@ -117,6 +122,15 @@ function setupPieDiagram(canvasId, data, labels) {
             }
         }
     });
+    
+    var listEntries = canvas.parentElement.parentElement.children[0].children[1].children;
+    for(var i=0; i<listEntries.length; i++) {
+        var listEntry = listEntries[i].children[0];
+        listEntry.innerHTML = labels[i];
+    }
+    
+    $('#'+canvasId.replace('canvas', 'div')).show();
+    $('#'+canvasId.replace('canvas', 'loading')).hide();
 }
 
 
